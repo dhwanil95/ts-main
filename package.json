@@ -1,0 +1,42 @@
+{
+  "name": "webcrawler",
+  "private": "true",
+  "bolt": {
+    "workspaces": [
+      "backend"
+    ]
+  },
+  "scripts": {
+    "install-all": "npm install && workspaces-run -- npm install --",
+    "ci-all": "npm ci && workspaces-run -- npm ci --",
+    "clean": "workspaces-run --parallel -- npm run clean --",
+    "lint": "workspaces-run --parallel -- npm run lint --",
+    "build": "workspaces-run --parallel --order-by-deps -- npm run build --",
+    "analyze": "workspaces-run --parallel -- npm run analyze --",
+    "test": "workspaces-run --parallel --ignore=@app/integration-test -- npm run test --",
+    "main": "npm run build && node ./backend/build/js/main.js"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node14": "1.0.1",
+    "@types/jest": "^29.5.12",
+    "@types/puppeteer": "^7.0.4",
+    "@types/reflect-metadata": "^0.1.0",
+    "eslint-config-standard-with-typescript": "21.0.1",
+    "eslint-plugin-jest": "25.0.4",
+    "eslint-plugin-sonarjs": "0.13.0",
+    "npm-run-all": "^4.1.5",
+    "workspaces-run": "1.0.1"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "jest-mock-console": "^2.0.0",
+    "jest-mock-extended": "^3.0.7",
+    "puppeteer": "^22.12.1",
+    "reflect-metadata": "^0.2.2",
+    "typescript": "^4.9.5"
+  }
+}
