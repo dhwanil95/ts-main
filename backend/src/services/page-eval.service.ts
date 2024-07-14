@@ -6,16 +6,14 @@ export class PageEvalService {
   }
 }
 
-export async function pageEval<T> (page: Page, pageFunction: () => T | Promise<T>): Promise<T> {
-  return await page.evaluate(pageFunction) as T
+export async function pageEval<T> (page: Page, pageFunction: () => T | Promise<T>): Promise<Awaited<T>> {
+  return await page.evaluate(pageFunction) as Awaited<T>
 }
 
-// istanbul ignore next - this function is running in dom context of headless browser
 export function domExtractText (): string {
   return document?.body?.innerText ?? ''
 }
 
-// istanbul ignore next - this function is running in dom context of headless browser
 export function domExtractHyperlinks (): string[] {
-  return Array.from(document.getElementsByTagName('a'), a => (a as HTMLAnchorElement).href)
+  return Array.from(document.getElementsByTagName('a')).map((a: HTMLAnchorElement) => a.href)
 }

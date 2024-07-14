@@ -4,10 +4,12 @@ export class UrlLoaderService {
   private static instance: UrlLoaderService
 
   // Constructor is intentionally empty to prevent direct instantiation
-  private constructor () {}
+  private constructor () {
+    // This is emoty
+  }
 
   public static getInstance (): UrlLoaderService {
-    if (!UrlLoaderService.instance) {
+    if (UrlLoaderService.instance == null) {
       UrlLoaderService.instance = new UrlLoaderService()
     }
     return UrlLoaderService.instance
