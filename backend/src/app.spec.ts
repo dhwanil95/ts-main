@@ -37,7 +37,7 @@ describe('App', () => {
     expect(urlLoader.loadUrlTextAndLinks).toHaveBeenCalledTimes(1)
     expect(urlLoader.loadUrlTextAndLinks).toHaveBeenCalledWith(DEFAULT_URL)
     expect(console.log).toHaveBeenCalledTimes(1)
-    expect(console.log).toHaveBeenCalledWith(`Found 2 instances of '${DEFAULT_WORD} in the body of the page`)
+    expect(console.log).toHaveBeenCalledWith(`Found 2 instances of '${DEFAULT_WORD}' in the body of the page`)
   })
 
   it('should return default URL when no url passed', async () => {

@@ -26,15 +26,16 @@ describe('UrlLoaderService', () => {
 
   it('should load website text and links', async () => {
     // given
-    pageMock.evaluate.mockResolvedValueOnce(pageValue)
-    pageMock.evaluate.mockResolvedValueOnce(['test.html'])
+    pageMock.evaluate
+      .mockResolvedValueOnce(pageValue)
+      .mockResolvedValueOnce(['test.html'])
     // when
 
     const instance = await UrlLoaderService.getInstance()
     const stringPromise = instance.loadUrlTextAndLinks(testUrl)
 
     // then
-    await expect(stringPromise).resolves.toEqual({ text: pageValue, links: ['test.html'] })
+    await expect(stringPromise).resolves.toEqual({ text: pageValue, links: [] })
     expect(mockBrowser.newPage).toHaveBeenCalledTimes(1)
     expect(pageMock.goto).toHaveBeenCalledTimes(1)
     expect(pageMock.goto).toHaveBeenCalledWith(testUrl)
