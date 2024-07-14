@@ -1,60 +1,60 @@
-import puppeteer, { Page } from 'puppeteer';
+import puppeteer from 'puppeteer'
 
 export class UrlLoaderService {
-  private static instance: UrlLoaderService;
+  private static instance: UrlLoaderService
 
-  private constructor() {} // Make the constructor private to prevent direct instantiation
+  // Constructor is intentionally empty to prevent direct instantiation
+  private constructor () {}
 
-  public static getInstance(): UrlLoaderService {
+  public static getInstance (): UrlLoaderService {
     if (!UrlLoaderService.instance) {
-      UrlLoaderService.instance = new UrlLoaderService();
+      UrlLoaderService.instance = new UrlLoaderService()
     }
-    return UrlLoaderService.instance;
+    return UrlLoaderService.instance
   }
 
-  async loadUrlTextAndLinks(url: string, retries = 3): Promise<{ text: string, links: string[] }> {
-    const browser = await puppeteer.launch({ headless: true, args: ['--disable-dev-shm-usage'] });
-    const page = await browser.newPage();
+  async loadUrlTextAndLinks (url: string, retries = 3): Promise<{ text: string, links: string[] }> {
+    const browser = await puppeteer.launch({ headless: true, args: ['--disable-dev-shm-usage'] })
+    const page = await browser.newPage()
 
     try {
-      console.log(`Navigating to URL: ${url}`);
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 }); // Increase timeout to 60 seconds
+      console.log(`Navigating to URL: ${url}`)
+      await page.goto(url)
 
-      console.log('Waiting for body selector...');
-      await page.waitForSelector('body', { timeout: 60000 }); // Increase timeout to 60 seconds
+      console.log('Waiting for body selector...')
+      await page.waitForSelector('body', { timeout: 60000 })
 
-      const text = await page.evaluate(() => document.body.innerText);
+      const text = await page.evaluate(() => document.body.innerText)
       const links = await page.evaluate(() =>
         Array.from(document.querySelectorAll('a[href]'), a => (a as HTMLAnchorElement).href)
-      );
+      )
 
       // Debug logging to verify the links before filtering
-      console.log('All extracted links:', links);
+      console.log('All extracted links:', links)
 
       // Ensure that we're only keeping valid URLs
-      const filteredLinks = links.filter(href => {
+      const filteredLinks = links.filter((href: string) => {
         try {
-          const url = new URL(href);
-          return url.protocol === 'http:' || url.protocol === 'https:';
+          const linkUrl = new URL(href)
+          return linkUrl.protocol === 'http:' || linkUrl.protocol === 'https:'
         } catch (e) {
-          return false;
+          return false
         }
-      });
+      })
 
       // Debug logging to verify the filtered links
-      console.log('Filtered links:', filteredLinks);
+      console.log('Filtered links:', filteredLinks)
 
-      await browser.close();
-      return { text, links: filteredLinks };
-
+      await browser.close()
+      return { text, links: filteredLinks }
     } catch (error) {
+      await browser.close()
       if (retries > 0) {
-        console.log(`Retrying... (${3 - retries} attempts left)`);
-        return this.loadUrlTextAndLinks(url, retries - 1);
+        console.log(`Retrying... (${3 - retries} attempts left)`)
+        return await this.loadUrlTextAndLinks(url, retries - 1)
       } else {
-        console.error(`Error navigating to URL: ${url}`, error);
-        await browser.close();
-        return { text: '', links: [] }; // Return empty values in case of an error
+        console.error(`Error navigating to URL: ${url}`, error)
+        return { text: '', links: [] }
       }
     }
   }
